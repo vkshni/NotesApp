@@ -49,6 +49,44 @@ button:hover {
     opacity: 0.85
 }
 
+#msg {
+    margin-top: 1rem;
+    font-weight: bold;
+    height: 10px;
+}
+
 h2 {
+    color: white;
+}
+
+#notes-list {
+    margin-top: 1rem;
+}
+
+#notes-list div {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: rgb(92, 168, 255);
+    border-radius: 12px;
+    background-color: rgb(119, 119, 151);
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 4px #1c1b1f;
+}
+
+#notes-list div:hover {
+    transform: scale(1.01);
+    transition: 0.2s;
+}
+
+#notes-list span {
+
+    flex: 1;
+    margin-left: 14px;
+    color: white;
+}
+
+#notes-list p {
+    margin-right: 14px;
     color: white;
 }
