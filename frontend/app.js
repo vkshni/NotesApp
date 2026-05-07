@@ -52,31 +52,26 @@ const showMsg = (msgText, color) => {
     }, 1000);
 }
 
-
-// Render
-const renderNotes = (arr) => {
+// Load notes
+async function loadNotes() {
+    const response = await fetch("http://localhost:5000/notes")
+    const notes = await response.data();
 
     notesListBox.innerHTML = "";
-    arr.forEach(note => {
-        const notesBox = document.createElement("div");
-        const title = document.createElement("span");
-        const content = document.createElement("p");
 
-        title.innerText = note.title;
-        content.innerText = note.content;
-
-        notesBox.append(title, content);
-        notesListBox.appendChild(notesBox);
+    notes.forEach(note => {
+        notesListBox.innerHTML = `
+        <div class="note-card">
+            <h3>${note.title}</h3>
+            <p>${note.content}</p>
+        </div>`
     });
-
 }
+
 
 // Save
-const saveAndRender = () => {
-    localStorage.setItem("notes", JSON.stringify(notesArr));
-    renderNotes(notesArr);
-}
 
-// Render notes on page load
-renderNotes(notesArr);
+
+// Runs on page load
+loadNotes();
 
