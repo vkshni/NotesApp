@@ -2,6 +2,7 @@
 
 // Buttons
 const saveBtn = document.getElementById("save-btn");
+const clearBtn = document.getElementById("clear-btn");
 
 // Inputs
 const titleInput = document.getElementById("title-input");
@@ -11,14 +12,11 @@ const content = document.getElementById("content");
 const msgBox = document.getElementById("msg");
 const notesListBox = document.getElementById("notes-list");
 
-// Temporary Storage
-const notesArr = JSON.parse(localStorage.getItem("notes")) || [];
-
-
+// Save Btn click
 saveBtn.onclick = () => saveBtnAction();
 
 // Save Notes
-const saveBtnAction = () => {
+const saveBtnAction = async () => {
 
     const title = titleInput.value.trim();
     const noteContent = content.value.trim();
@@ -26,19 +24,36 @@ const saveBtnAction = () => {
     if (title === "") return showMsg("Please enter title", "red");
 
     // Save to storage
-    notesArr.push({
-        id: Date.now(),
-        title: title,
-        content: noteContent
+    await fetch("http://localhost:5000/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content: noteContent })
     });
 
-    saveAndRender();
 
     titleInput.value = "";
     content.value = "";
     showMsg("Note added successfully", "green");
+    loadNotes()  // refresh list
+}
 
+// Clear all Btn click
+clearBtn.onclick = () => clearBtnAction();
 
+// Clear Btn action
+const clearBtnAction = async () => {
+    const response = await fetch("http://localhost:5000/notes", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ delete_all: true })
+    });
+
+    if (response.ok) {
+        loadNotes();
+        showMsg("All notes deleted", "green");
+    } else {
+        showMsg("Failed to delete notes", "red");
+    }
 }
 
 // Show msg
@@ -55,21 +70,19 @@ const showMsg = (msgText, color) => {
 // Load notes
 async function loadNotes() {
     const response = await fetch("http://localhost:5000/notes")
-    const notes = await response.data();
+    const notes = await response.json();
+    console.log(notes);
 
     notesListBox.innerHTML = "";
 
     notes.forEach(note => {
-        notesListBox.innerHTML = `
-        <div class="note-card">
-            <h3>${note.title}</h3>
-            <p>${note.content}</p>
-        </div>`
+        notesListBox.innerHTML += `
+    <div class="note-card">
+        <h3>${note.title}</h3>
+        <p>${note.content}</p>
+    </div>`
     });
 }
-
-
-// Save
 
 
 // Runs on page load
