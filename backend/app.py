@@ -1,6 +1,7 @@
 # Main Backend
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from pathlib import Path
 import sys
 
@@ -13,6 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from backend.db import NotesDB
 
 app = Flask(__name__)
+CORS(app)
 notes_db = NotesDB()
 
 # Creating table
@@ -30,12 +32,37 @@ def get_notes():
 @app.route("/notes", methods=["POST"])
 def add_note():
     data = request.get_json()
-    if not data or not data.get("title"):
-        return jsonify({"error": "Title is required"}), 400
 
-    note_id = notes_db.add_note(data)
-    return jsonify({"id": note_id, "message": "Note created"}), 201
+    if not data or not data.get("title") or not data.get("content"):
+        return jsonify({"error": "Title and content are required"}), 400
+
+    title = data.get("title").strip()
+    content = data.get("content").strip()
+
+    if not title or not content:
+        return jsonify({"error": "Title and content cannot be empty"}), 400
+
+    try:
+        note_id = notes_db.add_note({"title": title, "content": content})
+        return jsonify({"id": note_id, "message": "Note created"}), 201
+    except Exception as e:
+        return jsonify({"error": "Failed to create note"}), 500
+
+
+# DELETE all notes
+@app.route("/notes", methods=["DELETE"])
+def clear_all():
+    data = request.get_json()
+
+    if not data or not data.get("delete_all"):
+        return jsonify({"error": "delete_all parameter required"}), 400
+
+    try:
+        notes_db.delete_all()
+        return jsonify({"message": "All notes deleted"}), 200
+    except Exception as e:
+        return jsonify({"error": "Failed to delete notes"}), 500
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="127.0.0.1", port=5000)
