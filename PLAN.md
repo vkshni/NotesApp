@@ -15,8 +15,8 @@ A simple notes app with add, view, edit, and delete. Built with Flask + PostgreS
 
 ## Stack
 
-- **Backend:** Flask, psycopg2
-- **Database:** PostgreSQL
+- **Backend:** Flask, Sqlite
+- **Database:** SQLite
 - **Frontend:** HTML, CSS, vanilla JS
 
 ---
@@ -26,7 +26,7 @@ A simple notes app with add, view, edit, and delete. Built with Flask + PostgreS
 | Day | Focus | Goal |
 |-----|-------|------|
 | 1 | Planning | Write PLAN.md, DESIGN.md, schema.sql, stub files |
-| 2 | DB + server | Connect Postgres, run schema, boot Flask, test /health |
+| 2 | DB + server | Connect SQLite, run schema, boot Flask, test /health |
 | 3 | GET + POST | List and create notes via API |
 | 4 | PUT + DELETE | Edit and delete notes, full CRUD done |
 | 5 | Frontend | HTML structure + CSS layout |
