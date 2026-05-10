@@ -49,19 +49,20 @@ def add_note():
         return jsonify({"error": "Failed to create note"}), 500
 
 
-# DELETE all notes
-@app.route("/notes", methods=["DELETE"])
+# DELETE single note - /notes/1
+@app.route("/notes/<int:note_id>", methods=["DELETE"])
+def delete_note(note_id):
+    deleted = notes_db.delete_note(note_id)
+    if not deleted:
+        return jsonify({"error": "Note not found"}), 404
+    return "", 204
+
+
+# DELETE all notes - /notes/clear
+@app.route("/notes/clear", methods=["DELETE"])
 def clear_all():
-    data = request.get_json()
-
-    if not data or not data.get("delete_all"):
-        return jsonify({"error": "delete_all parameter required"}), 400
-
-    try:
-        notes_db.delete_all()
-        return jsonify({"message": "All notes deleted"}), 200
-    except Exception as e:
-        return jsonify({"error": "Failed to delete notes"}), 500
+    notes_db.delete_all()
+    return jsonify({"message": "All notes deleted"}), 200
 
 
 if __name__ == "__main__":

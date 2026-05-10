@@ -20,7 +20,7 @@ class NotesDB:
     def _get_connection(self):
 
         conn = sqlite3.connect(str(self.db_path))
-        conn.row_factory = sqlite3.row
+        conn.row_factory = sqlite3.Row
         return conn
 
     def get_schema(self):
@@ -52,16 +52,38 @@ class NotesDB:
         except:
             return []
 
-    def add_note(self, notes: dict):
+    def add_note(self, note: dict):
 
         try:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     "INSERT INTO notes (title, content) VALUES (?,?)",
-                    (notes.get("title"), notes.get("content")),
+                    (note.get("title"), note.get("content")),
                 )
                 return cursor.lastrowid
 
+        except:
+            return False
+
+    def delete_all(self):
+
+        try:
+            with self._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM notes")
+                conn.commit()
+                return True
+
+        except:
+            return False
+
+    def delete_note(self, note_id: int):
+
+        try:
+            with self._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM notes WHERE id = ?", (note_id,))
+                return cursor.rowcount > 0
         except:
             return False

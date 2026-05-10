@@ -37,22 +37,28 @@ const saveBtnAction = async () => {
     loadNotes()  // refresh list
 }
 
+// Delete single note
+async function deleteNote(id) {
+    const response = await fetch(`http://localhost:5000/notes/${id}`, {
+        method: "DELETE"
+    })
+    if (response.ok) {
+        document.getElementById(`note-${id}`).remove()
+        showMsg("Note deleted", "green")
+    }
+}
+
 // Clear all Btn click
 clearBtn.onclick = () => clearBtnAction();
 
-// Clear Btn action
+// Clear all
 const clearBtnAction = async () => {
-    const response = await fetch("http://localhost:5000/notes", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ delete_all: true })
-    });
-
+    const response = await fetch("http://localhost:5000/notes/clear", {
+        method: "DELETE"
+    })
     if (response.ok) {
-        loadNotes();
-        showMsg("All notes deleted", "green");
-    } else {
-        showMsg("Failed to delete notes", "red");
+        loadNotes()
+        showMsg("All notes deleted", "green")
     }
 }
 
@@ -67,19 +73,21 @@ const showMsg = (msgText, color) => {
     }, 1000);
 }
 
+
 // Load notes
 async function loadNotes() {
     const response = await fetch("http://localhost:5000/notes")
     const notes = await response.json();
-    console.log(notes);
 
     notesListBox.innerHTML = "";
 
     notes.forEach(note => {
         notesListBox.innerHTML += `
-    <div class="note-card">
+    <div class="note-card" id="note-${note.id}">
         <h3>${note.title}</h3>
         <p>${note.content}</p>
+        <button onclick="deleteNote(${note.id})">${"❌"}</button>
+        <button>${"Edit"}</button>
     </div>`
     });
 }
