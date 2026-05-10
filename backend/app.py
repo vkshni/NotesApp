@@ -65,5 +65,26 @@ def clear_all():
     return jsonify({"message": "All notes deleted"}), 200
 
 
+# UPDATE note - /notes/1
+@app.route("/notes/<int:note_id>", methods=["PUT"])
+def update_note(note_id):
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No parameters were given"}), 400
+
+    try:
+        updated = notes_db.update_note(
+            note_id=note_id,
+            new_title=data.get("title"),
+            new_content=data.get("content"),
+        )
+        if not updated:
+            return jsonify({"error": "Note not found"}), 404
+        return jsonify({"message": "Note updated"}), 200
+    except:
+        return jsonify({"error": "Failed to update note"}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)

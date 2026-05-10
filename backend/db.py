@@ -87,3 +87,16 @@ class NotesDB:
                 return cursor.rowcount > 0
         except:
             return False
+
+    def update_note(self, note_id: int, new_title: str = None, new_content: str = None):
+        try:
+            with self._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE notes SET title = ?, content = ? WHERE id = ?",
+                    (new_title, new_content, note_id),
+                )
+                conn.commit()  # add this
+                return cursor.rowcount > 0
+        except Exception as e:
+            return False
