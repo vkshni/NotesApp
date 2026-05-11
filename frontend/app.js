@@ -27,7 +27,7 @@ const saveBtnAction = async () => {
     if (title === "") return showMsg("Please enter title", "red");
 
     if (editingId) {
-        await fetch(`http://localhost:5000/notes/${editingId}`, {
+        await fetch(`https://notesapp-9r20.onrender.com/notes/${editingId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ title, content: noteContent })
@@ -37,7 +37,7 @@ const saveBtnAction = async () => {
         showMsg("Note updated successfully", "green");
     } else {
 
-        await fetch("http://localhost:5000/notes", {
+        await fetch("https://notesapp-9r20.onrender.com/notes", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ title, content: noteContent })
@@ -53,7 +53,7 @@ const saveBtnAction = async () => {
 
 // Delete single note
 async function deleteNote(id) {
-    const response = await fetch(`http://localhost:5000/notes/${id}`, {
+    const response = await fetch(`https://notesapp-9r20.onrender.com/notes/${id}`, {
         method: "DELETE"
     })
     if (response.ok) {
@@ -67,7 +67,7 @@ clearBtn.onclick = () => clearBtnAction();
 
 // Clear all
 const clearBtnAction = async () => {
-    const response = await fetch("http://localhost:5000/notes/clear", {
+    const response = await fetch("https://notesapp-9r20.onrender.com/notes/clear", {
         method: "DELETE"
     })
     if (response.ok) {
@@ -98,7 +98,7 @@ const showMsg = (msgText, color) => {
 
 // Load notes
 async function loadNotes() {
-    const response = await fetch("http://localhost:5000/notes")
+    const response = await fetch("https://notesapp-9r20.onrender.com/notes")
     const notes = await response.json();
 
     notesListBox.innerHTML = "";

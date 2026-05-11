@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pathlib import Path
 import sys
+import os
 
 # Adding PROJECT ROOT to the Python Path
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -11,7 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import DB
-from backend.db import NotesDB
+from db import NotesDB
 
 app = Flask(__name__)
 CORS(app)
@@ -87,4 +88,4 @@ def update_note(note_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
